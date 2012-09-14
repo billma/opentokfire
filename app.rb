@@ -1,6 +1,6 @@
-require 'sinatra'
-require 'json'
-require 'opentok'
+# require 'sinatra'
+# require 'json'
+# require 'opentok'
 get '/' do
   erb :index
 end
