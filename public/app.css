@@ -25,7 +25,7 @@
   }
   #logo{
     position:relative;
-    background:pink;
+    background:url('/img/logo-firetok.png');
     width:600px;
     height:80px;
     margin:0 auto;

@@ -1,26 +1,33 @@
 
 $(function(){
+  
+
+  
   var topics=new Firebase('http://gamma.firebase.com/song/firebaseRoulette/topics')
   // var clear=new Firebase('http://gamma.firebase.com/song/firebaseRoulette')
   //  clear.remove()
+
+  
   listTopics=function(){
     topics.on('value',function(data){
-      console.log(data.val())
       $('#topList .container').html('')
       data.forEach(addTopicLink)
     })
   }
+  
+  
   addTopic=function(name,session_id){
     // check to see if topic already exist
-    
     topics.once('value',function(data){
       name=name.toLowerCase()
       var test=name
       if(!data.hasChild(name)){
+        
         var newTopicRef=new Firebase('http://gamma.firebase.com/song/firebaseRoulette/topics/'+name)
         newTopicRef.child('name').set(name)
         newTopicRef.child('session_id').set(session_id)
         newTopicRef.child('totalUser').set(0)
+        
       }
       else
         alert('Topic: '+name+'already exist')

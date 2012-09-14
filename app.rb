@@ -1,4 +1,4 @@
-# require 'sinatra'
+require 'sinatra'
 # require 'json'
 # require 'opentok'
 get '/' do
