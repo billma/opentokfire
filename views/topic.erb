@@ -82,6 +82,8 @@ $(function(){
       
       
       //jquery event
+      
+      
       $('#waitlist_me').live('click',function(){
         current_user=waitlist_ref.push()
         current_user.set({name:""})
@@ -94,6 +96,9 @@ $(function(){
         })
         status="waiting"
       })
+      
+      
+      
       $('#join_chat').live('click',function(){
         joinChat()
         $('#join_chat').hide()
@@ -126,7 +131,7 @@ $(function(){
         div.setAttribute('id', 'stream'+stream.streamId)
         div.setAttribute('class', 'eachVideo')
         $('#streams').append(div)
-        session.subscribe(stream,div.id,{width:180, height:130})
+        session.subscribe(stream,div.id,{width:250, height:180})
       }
       
       
@@ -139,7 +144,7 @@ $(function(){
           div.setAttribute('id', 'stream'+streams[i].streamId)
           div.setAttribute('class', 'eachVideo')
           $('#streams').append(div)
-          session.subscribe(streams[i],div.id,{width:180, height:130})
+          session.subscribe(streams[i],div.id,{width:250, height:180})
         }
       }
       
@@ -172,7 +177,7 @@ $(function(){
          status="chatting"
          var template='<div id="myPublisherDiv"></div>'
          $('#myStream').append(template)
-         publisher = TB.initPublisher(api_key,'myPublisherDiv',{width:180, height:130})
+         publisher = TB.initPublisher(api_key,'myPublisherDiv',{width:250, height:180})
          session.publish(publisher)
          var c_u= new Firebase('http://gamma.firebase.com/song/firebaseRoulette/topics/'
                   +current_topic+'/waitlist/'+current_userId)
@@ -196,10 +201,12 @@ $(function(){
 }) // <-- end of document.ready -->
 </script>
   <div id="main" class="container">
+    <div id="totalUser"><span>1</span></div>
     <div class="topic_header"><%=@topic%></div>
     <a href="./" class="back_button">
       <i class="icon-circle-arrow-left"></i>
     </a>
+    
     <div id="streams">
      <div id="myStream"></div>
     </div>
@@ -208,7 +215,7 @@ $(function(){
       <div id="waitlist_me" class="topic_control">Waitlist Me</div>
       <div id="join_chat" class="topic_control">Join Chat</div>
     </div>
-    <div id="totalUser"><span>1</span></div>
+    
   </div>
 </body>
 </html>

@@ -216,9 +216,8 @@
   
   .topic_header{
     position:relative;
-    left:40px;
     border:1px solid #2E2E2E;
-    width:300px;
+    width:250px;
     margin:20px auto;
     text-align:center;
     font-size:40px;
@@ -234,7 +233,7 @@
     font-size:60px;
     float:left;
     top:-65px;
-    left:260px;
+    left:250px;
     color:#424242;
   }
   .back_button:hover{
@@ -244,8 +243,8 @@
   #streams{
     border:10px solid #82080A;
     border-radius:10px;
-    width:360px;
-    height:260px;
+    width:500px;
+    height:360px;
     margin:20px auto;
     background:url('/img/empty_slot.png');
     background-color:white;
@@ -254,7 +253,6 @@
      margin:0px;
      float:left;
      border-radius:10px;
-
    }
   #myStream{
     height:130px;
@@ -263,25 +261,28 @@
     float:left;
   }
   #totalUser{
-    border:1px solid #2E2E2E;
-    height:70px;
-    width:70px;
+    position:relative;
+    top:25px;
+    right:250px;
+    border:5px solid #B6B6B6;
+    height:45px;
+    width:45px;
     margin:0 auto;
+    float:right;
     border-radius:100px;
     font-size:30px;
     font-weight:bold;
     text-align:center;
-    background:#424242;
+    background:#323232;
   }
   #totalUser span{
     position:relative;
-    top:25px;
-    color:white;
+    top:15px;
+    color:#EEE;
   }
   #topic_control_container{
     width:200px;
     margin:10px auto;
-    
   }
   .topic_control{
     display:none;
