@@ -46,6 +46,12 @@ $(function(){
     current_topic_ref.child('totalUser').set(count)
     $('#totalUser span').html(count)
     current_topic_ref.child('totalUser').setOnDisconnect(count-1)
+    // if(count==1){
+    //   current_topic_ref.removeOnDisconnect()
+    // }
+    // else{
+    //   
+    // }
   })
   
   
@@ -201,7 +207,7 @@ $(function(){
 }) // <-- end of document.ready -->
 </script>
   <div id="main" class="container">
-    <div id="totalUser"><span>1</span></div>
+    
     <div class="topic_header"><%=@topic%></div>
     <a href="./" class="back_button">
       <i class="icon-circle-arrow-left"></i>
@@ -212,6 +218,7 @@ $(function(){
     </div>
     <div id="waitlist_success">You have been waitlisted! Position <span>1</span> </div>
     <div id="topic_control_container">
+      <i id="totalUser" class="icon-group"><span>1</span></i>
       <div id="waitlist_me" class="topic_control">Waitlist Me</div>
       <div id="join_chat" class="topic_control">Join Chat</div>
     </div>

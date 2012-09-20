@@ -6,22 +6,18 @@
   body{
     background:#DFDFDF;
   }
-
-  
   #main{
     width:900px;
     margin:0 auto;
   }
 
   .bottom{
-    margin-top:10px;
-    margin-bottom:10px;
   }
   .top{
-    margin-bottom:10px;
     background:#82080A;
     border-bottom-left-radius:10px;
     border-bottom-right-radius:10px;
+    box-shadow:0 10px 100px -2px #000;
   }
   #logo{
     position:relative;
@@ -44,7 +40,6 @@
     background:#EEE;
     text-align:center;
     margin:0 auto;
-    
   }
    #project_info h1{
      color:white;
@@ -150,18 +145,75 @@
     left:-1px;
   }
   #topList{
+      margin-top:311px;
+    position:fixed;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    overflow:auto;
+    padding-bottom:130px;
+
 
   }
   #topList .container{
     width:80%;
-    padding-left:15px;
+    height:380px;
+    padding-top:5px;
+    text-align:center;
+    margin-bottom:400px;
+
   }
-  .each_room{
+  #listContent{
+    background:red;
+    border:1px solid red;
+    
+  }
+  
+  
+  #endMessage{
+    width:60%;
+    margin:0 auto;
+    font-size:20px;
+    color:#5F5F5F;
+    padding:10px;
+    line-height:140%;
+    margin-top:40px;
+  }
+
+  #authorInfo{
+    width:150px;
+    background:white;
+    margin:10px auto 100px auto;
+    padding:10px;
+    border-radius:5px;
+    box-shadow:0px 0px 10px 2px #AAA inset;
+  }
+  #mePic{
+    width:50px;
+    height:50px;
+    position:relative;
+    left:5px;
     float:left;
-    width:200px;
+  }
+  #developerInfo{
+    width:100px;
+    float:left;
+  
+  }
+   #developerInfo span{
+     font-weight:bold;
+   }
+   #authorInfo .icon{
+     width:30px;
+     height:30px;
+     margin-top:5px;
+   }
+  .each_room{
+    width:650px;
     background:#FFF;
     height:40px;
-    margin:5px;
+    margin:5px auto;
     border-radius:100px;
     border:2px solid #AAA;
   }
@@ -174,21 +226,21 @@
   }
   .each_room i{
     position:relative;
-    left:-90px;
+    left:10px;
+    float:left;
     top:5px;
     font-size:30px;
   }
   .each_room_name{
     text-align:left;
     position:relative;
+    top:10px;
     font-size:20px;
-    width:80px;
+    width:500px;
     overflow:hidden;
-    top:-8px;
     left:50px;
     text-transform:capitalize;
     height:20px;
-    
   }
   .in_chat{
     font-size:15px;
@@ -200,8 +252,8 @@
   }
   .totalUser{
     position:relative;
-    left:165px;
-    top:-35px;
+    top:-17px;
+    float:right;
     font-size:30px;
     width:35px;
     height:27px;
@@ -210,30 +262,30 @@
     border-radius:100px;
     background:#82080A;
     color:white;
-    
   }
   /*=======================*/
   
   .topic_header{
     position:relative;
     border:1px solid #2E2E2E;
-    width:250px;
+    width:500px;
     margin:20px auto;
     text-align:center;
-    font-size:40px;
+    font-size:20px;
     padding-top:20px;
     padding-bottom:20px;
     border-radius:100px;
     background:#424242;
     color:white;
     text-transform:capitalize;
+    overflow:hidden;
   }
   .back_button{
     position:relative;
-    font-size:60px;
+    font-size:65px;
     float:left;
-    top:-65px;
-    left:250px;
+    top:-60px;
+    left:100px;
     color:#424242;
   }
   .back_button:hover{
@@ -262,38 +314,40 @@
   }
   #totalUser{
     position:relative;
-    top:25px;
-    right:250px;
-    border:5px solid #B6B6B6;
-    height:45px;
-    width:45px;
+    right:20px;
     margin:0 auto;
-    float:right;
-    border-radius:100px;
-    font-size:30px;
+    font-size:40px;
     font-weight:bold;
     text-align:center;
-    background:#323232;
+    color:#999;
   }
   #totalUser span{
+    font-size:30px;
     position:relative;
-    top:15px;
-    color:#EEE;
+    left:50px;
+    top:-20px;
+    width:50px;
+    text-align:center;
   }
   #topic_control_container{
     width:200px;
     margin:10px auto;
+    text-align:center;
   }
   .topic_control{
     display:none;
+    position:relative;
+    top:20px;
     border:1px solid #2E2E2E;
-    padding:5px;
+    padding:20px;
     border-radius:100px;
     text-align:center;
     background:#424242;
     color:#DFDFDF;
     letter-spacing:2px;
+    font-size:15px;
     font-family: 'Karla', sans-serif;
+    margin-bottom:100px;
   }
   .topic_control:hover{
     background:#82080A;
@@ -313,16 +367,5 @@
     background:#7C7C7C;
     color:#DFDFDF;
   }
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
   
