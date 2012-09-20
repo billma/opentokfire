@@ -1,6 +1,7 @@
 
 $(function(){
-
+  // var clear = new Firebase('https://gamma.firebase.com/billma/opentokFire')
+  // clear.remove()
  
   var topics=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics')
 
