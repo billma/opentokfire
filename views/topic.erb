@@ -14,7 +14,6 @@
 </head>
 <body>
 
-
 <script type="text/javascript">
 $(function(){
   var connection_limit=4
@@ -22,13 +21,14 @@ $(function(){
   var api_key;
   var token;
   var current_topic='<%=@topic%>'  
-  var topics=new Firebase('http://gamma.firebase.com/song/firebaseRoulette/topics')
   
-  var current_topic_ref=new Firebase('http://gamma.firebase.com/song/firebaseRoulette/topics/'+current_topic)
-  var waitlist_ref=new Firebase('http://gamma.firebase.com/song/firebaseRoulette/topics/'+current_topic+'/waitlist')
+  var topics=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics')
+  
+  var current_topic_ref=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+current_topic)
+  var waitlist_ref=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+current_topic+'/waitlist')
   var current_user;
   var current_userId=-1;
-  var users_count=new Firebase('http://gamma.firebase.com/song/firebaseRoulette/topics/'+current_topic+'/count')
+  var users_count=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+current_topic+'/count')
       totalCount=users_count.push()
       totalCount.set({id:''})
       totalCount.removeOnDisconnect()
@@ -46,12 +46,6 @@ $(function(){
     current_topic_ref.child('totalUser').set(count)
     $('#totalUser span').html(count)
     current_topic_ref.child('totalUser').setOnDisconnect(count-1)
-    // if(count==1){
-    //   current_topic_ref.removeOnDisconnect()
-    // }
-    // else{
-    //   
-    // }
   })
   
   
@@ -185,7 +179,7 @@ $(function(){
          $('#myStream').append(template)
          publisher = TB.initPublisher(api_key,'myPublisherDiv',{width:250, height:180})
          session.publish(publisher)
-         var c_u= new Firebase('http://gamma.firebase.com/song/firebaseRoulette/topics/'
+         var c_u= new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'
                   +current_topic+'/waitlist/'+current_userId)
          c_u.remove()
          $('#waitlist_success').hide()

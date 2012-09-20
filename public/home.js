@@ -1,7 +1,9 @@
 
 $(function(){
+
  
-  var topics=new Firebase('http://gamma.firebase.com/song/firebaseRoulette/topics')
+  var topics=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics')
+
 
   listTopics=function(){
     topics.on('value',function(data){
@@ -19,7 +21,7 @@ $(function(){
       
       // var test=name
       if(!data.hasChild(name)){
-        var newTopicRef=new Firebase('http://gamma.firebase.com/song/firebaseRoulette/topics/'+name)
+        var newTopicRef=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+name)
         newTopicRef.set({name:name,session_id:session_id,totalUser:1}, function(){
            window.location="/"+name;
         })
@@ -33,7 +35,7 @@ $(function(){
     topicName=topic.val()['name'].toLowerCase()
     totalUser=topic.val()['totalUser']
     if(totalUser=="0"){
-      var emptyTopicRef=new Firebase('http://gamma.firebase.com/song/firebaseRoulette/topics/'+name)
+      var emptyTopicRef=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+name)
       emptyTopicRef.remove()
     }else{
       var template='<a href="/'+topicName+'" topic="'+topicName+'"class="each_room btn">'+
