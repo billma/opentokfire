@@ -145,32 +145,22 @@
     left:-1px;
   }
   #topList{
-      margin-top:311px;
+
+    margin-top:311px;
     position:fixed;
     top:0;
     bottom:0;
     left:0;
     right:0;
     overflow:auto;
-    padding-bottom:130px;
-
-
   }
   #topList .container{
     width:80%;
-    height:380px;
-    padding-top:5px;
+    padding-top:5px;  
+    margin-bottom:100px;
     text-align:center;
-    margin-bottom:400px;
 
   }
-  #listContent{
-    background:red;
-    border:1px solid red;
-    
-  }
-  
-  
   #endMessage{
     width:60%;
     margin:0 auto;
@@ -184,7 +174,7 @@
   #authorInfo{
     width:150px;
     background:white;
-    margin:10px auto 100px auto;
+    margin:10px auto 0 auto;
     padding:10px;
     border-radius:5px;
     box-shadow:0px 0px 10px 2px #AAA inset;
