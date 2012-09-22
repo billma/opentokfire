@@ -82,8 +82,6 @@ $(function(){
       
       
       //jquery event
-      
-      
       $('#waitlist_me').live('click',function(){
         current_user=waitlist_ref.push()
         current_user.set({name:""})
@@ -96,9 +94,7 @@ $(function(){
         })
         status="waiting"
       })
-      
-      
-      
+
       $('#join_chat').live('click',function(){
         joinChat()
         $('#join_chat').hide()

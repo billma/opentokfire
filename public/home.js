@@ -2,6 +2,7 @@
 $(function(){
   // var clear = new Firebase('https://gamma.firebase.com/billma/opentokFire')
   // clear.remove()
+  
  
   var topics=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics')
 
@@ -37,7 +38,9 @@ $(function(){
     totalUser=topic.val()['totalUser']
     if(totalUser=="0"){
       var emptyTopicRef=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+name)
-      emptyTopicRef.remove()
+      console.log('empty topic')
+      console.log(topic.val())
+      // emptyTopicRef.remove()
     }else{
       var template='<a href="/'+topicName+'" topic="'+topicName+'"class="each_room btn">'+
         '<i class="icon-group"></i>'+
