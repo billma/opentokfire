@@ -2,25 +2,21 @@
 $(function(){
   // var clear = new Firebase('https://gamma.firebase.com/billma/opentokFire')
   // clear.remove()
-  
- 
+  // 
+  //  
   var topics=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics')
-
 
   listTopics=function(){
     topics.on('value',function(data){
-       console.log(data.val())
       $('#listContainer').html('')
       data.forEach(addTopicLink)
      
     })
   }
-  
   addTopic=function(name,session_id){
     // check to see if topic already exist
     name=name.toLowerCase()
     topics.once('value',function(data){
-      
       // var test=name
       if(!data.hasChild(name)){
         var newTopicRef=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+name)
@@ -37,10 +33,7 @@ $(function(){
     topicName=topic.val()['name'].toLowerCase()
     totalUser=topic.val()['totalUser']
     if(totalUser=="0"){
-      var emptyTopicRef=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+name)
-      console.log('empty topic')
-      console.log(topic.val())
-      // emptyTopicRef.remove()
+      topic.ref().remove(listTopics)
     }else{
       var template='<a href="/'+topicName+'" topic="'+topicName+'"class="each_room btn">'+
         '<i class="icon-group"></i>'+
@@ -56,8 +49,6 @@ $(function(){
     $.post( '/getSession',{},function(data){
       if(data['session_id']!=null){
           addTopic(name, data['session_id'])
-          // alert(data['session_id'])
-          // window.location="/"+name;
       }
     })
   }

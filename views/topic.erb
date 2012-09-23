@@ -14,188 +14,189 @@
 </head>
 <body>
 
-<script type="text/javascript">
-$(function(){
-  var connection_limit=4
-  var session_id;
-  var api_key;
-  var token;
-  var current_topic='<%=@topic%>'  
+  <script type="text/javascript">
+    $(function(){
+      var connection_limit=4
+      var session_id;
+      var api_key;
+      var token;
+      var current_topic='<%=@topic%>'  
   
-  var topics=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics')
+      var topics=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics')
   
-  var current_topic_ref=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+current_topic)
-  var waitlist_ref=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+current_topic+'/waitlist')
-  var current_user;
-  var current_userId=-1;
-  var users_count=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+current_topic+'/count')
-      totalCount=users_count.push()
-      totalCount.set({id:''})
-      totalCount.removeOnDisconnect()
-  var nextInLine=waitlist_ref.startAt().limit(1)
-  var nextInLine_id=undefined;
-  var status;
-  
-  
-  // listens to changes in # of users in the room
-  users_count.on('value',function(data){
-    var count=0
-    data.forEach(function(){
-      count++;
-    })
-    current_topic_ref.child('totalUser').set(count)
-    $('#totalUser span').html(count)
-    current_topic_ref.child('totalUser').setOnDisconnect(count-1)
-  })
+      var current_topic_ref=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+current_topic)
+      var waitlist_ref=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+current_topic+'/waitlist')
+      var current_user;
+      var current_userId=-1;
+      var users_count=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+current_topic+'/count')
+          totalCount=users_count.push()
+          totalCount.set({id:''})
+          totalCount.removeOnDisconnect()
+      var nextInLine=waitlist_ref.startAt().limit(1)
+      var nextInLine_id=undefined;
+      var status;
   
   
-  // listens to changes in waitlist
-  waitlist_ref.on('value',function(data){
-    var count=0
-    var before_me=0;
-    data.forEach(function(data){
-      count++;
-    })
-    nextInLine.once('value',function(data){
-      data.forEach(function(data){
-        nextInLine_id=data.ref().name()
-      })
-    })
-    updateWaitlist(data)
-  })
-  
-  // get topic data api and sessionId etc
-  topics.once('value',function(data){
-    topic=data.child(current_topic).val()
-    session_id=topic['session_id']
-    // generate a tokbox token 
-    $.post('/getToken',{},function(data){
-      api_key=data['api_key']
-      token=data['token']
-      var session=TB.initSession(session_id)
-      
-      // setup tokbox session event
-      session.addEventListener('sessionConnected', sessionConnectedHandler);
-      session.addEventListener('streamCreated', addNewStreamHandler)
-      session.addEventListener("streamDestroyed", streamDestroyedHandler);
-      session.connect(api_key, token)
-      
-      
-      //jquery event
-      $('#waitlist_me').live('click',function(){
-        current_user=waitlist_ref.push()
-        current_user.set({name:""})
-        current_user.removeOnDisconnect()
-        current_userId=current_user.name()
-        $('#waitlist_success').show()
-        $('#waitlist_me').hide()
-        waitlist_ref.once('value',function(data){
-          updateWaitlist(data)
+      // listens to changes in # of users in the room
+      users_count.on('value',function(data){
+        var count=0
+        data.forEach(function(){
+          count++;
         })
-        status="waiting"
+        current_topic_ref.child('totalUser').set(count)
+        $('#totalUser span').html(count)
+        current_topic_ref.child('totalUser').setOnDisconnect(count-1)
       })
+  
+  
+      // listens to changes in waitlist
+      waitlist_ref.on('value',function(data){
+        var count=0
+        var before_me=0;
+        data.forEach(function(data){
+          count++;
+        })
+        nextInLine.once('value',function(data){
+          data.forEach(function(data){
+            nextInLine_id=data.ref().name()
+          })
+        })
+        updateWaitlist(data)
+      })
+  
+      // get topic data api and sessionId etc
+      topics.once('value',function(data){
+        topic=data.child(current_topic).val()
+        session_id=topic['session_id']
+        // generate a tokbox token 
+        $.post('/getToken',{},function(data){
+          api_key=data['api_key']
+          token=data['token']
+          var session=TB.initSession(session_id)
+      
+          // setup tokbox session event
+          session.addEventListener('sessionConnected', sessionConnectedHandler);
+          session.addEventListener('streamCreated', addNewStreamHandler)
+          session.addEventListener("streamDestroyed", streamDestroyedHandler);
+          session.connect(api_key, token)
+      
+      
+          //jquery event
+          $('#waitlist_me').live('click',function(){
+            current_user=waitlist_ref.push()
+            current_user.set({name:""})
+            current_user.removeOnDisconnect()
+            current_userId=current_user.name()
+            $('#waitlist_success').show()
+            $('#waitlist_me').hide()
+            waitlist_ref.once('value',function(data){
+              updateWaitlist(data)
+            })
+            status="waiting"
+          })
 
-      $('#join_chat').live('click',function(){
-        joinChat()
-        $('#join_chat').hide()
-      })
-      
-      
-      // tokbox session event handlers
-      function sessionConnectedHandler(event){    
-        if(event.connections.length<=connection_limit)
-          $('#join_chat').show()
-        else
-          $('#waitlist_me').show()
-        subscribeToStreams(event.streams)
-      }
-      
-      function addNewStreamHandler(event){
-        var stream=event.streams[0]
-        if(stream.connection.connectionId==session.connection.connectionId){
-          return;
-        } 
-        var size=countSessionStream()
-        if(size<connection_limit){
-          $('#waitlist_me').hide()
-          if(status=="chatting")
-             $('#join_chat').hide()
-          else
-            $('#join_chat').show()
-        } 
-        var div= document.createElement('div')
-        div.setAttribute('id', 'stream'+stream.streamId)
-        div.setAttribute('class', 'eachVideo')
-        $('#streams').append(div)
-        session.subscribe(stream,div.id,{width:250, height:180})
-      }
-      
-      
-      function subscribeToStreams(streams){
-        for(var i=0; i<streams.length;i++){
-          if(streams[i].connection.connectionId==session.connection.connectionId){
-            return;
-          } 
-          var div= document.createElement('div')
-          div.setAttribute('id', 'stream'+streams[i].streamId)
-          div.setAttribute('class', 'eachVideo')
-          $('#streams').append(div)
-          session.subscribe(streams[i],div.id,{width:250, height:180})
-        }
-      }
-      
-      function streamDestroyedHandler(event){
-        var stream=event.streams[0]
-        var size=countSessionStream()
-        if(size<connection_limit){
-          $('#waitlist_me').hide()
-          if(current_userId==nextInLine_id){
-            // initiate the next user inline
+          $('#join_chat').live('click',function(){
             joinChat()
             $('#join_chat').hide()
-          }else{
-            if(status=="chatting" || status=="waiting")
-              $('#join_chat').hide()
-            else
+          })
+      
+      
+          // tokbox session event handlers
+          function sessionConnectedHandler(event){    
+            if(event.connections.length<=connection_limit)
               $('#join_chat').show()
+            else
+              $('#waitlist_me').show()
+            subscribeToStreams(event.streams)
           }
-        }
-      }
-      function countSessionStream(){
-        var size=0
-        for(key in session.streams){
-          if(session.streams.hasOwnProperty(key)) size++
-        }
-        return size;
-      }
-      function joinChat(){
-         nextInLine_id=''
-         status="chatting"
-         var template='<div id="myPublisherDiv"></div>'
-         $('#myStream').append(template)
-         publisher = TB.initPublisher(api_key,'myPublisherDiv',{width:250, height:180})
-         session.publish(publisher)
-         var c_u= new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'
-                  +current_topic+'/waitlist/'+current_userId)
-         c_u.remove()
-         $('#waitlist_success').hide()
-      }
-    }) // <-- end of post '/getToken'-->
-  })// <-- end of topics.once -->
+      
+          function addNewStreamHandler(event){
+            var stream=event.streams[0]
+            if(stream.connection.connectionId==session.connection.connectionId){
+              return;
+            } 
+            var size=countSessionStream()
+            if(size<connection_limit){
+              $('#waitlist_me').hide()
+              if(status=="chatting")
+                 $('#join_chat').hide()
+              else
+                $('#join_chat').show()
+            } 
+            var div= document.createElement('div')
+            div.setAttribute('id', 'stream'+stream.streamId)
+            div.setAttribute('class', 'eachVideo')
+            $('#streams').append(div)
+            session.subscribe(stream,div.id,{width:250, height:180})
+          }
+      
+      
+          function subscribeToStreams(streams){
+            for(var i=0; i<streams.length;i++){
+              if(streams[i].connection.connectionId==session.connection.connectionId){
+                return;
+              } 
+              var div= document.createElement('div')
+              div.setAttribute('id', 'stream'+streams[i].streamId)
+              div.setAttribute('class', 'eachVideo')
+              $('#streams').append(div)
+              session.subscribe(streams[i],div.id,{width:250, height:180})
+            }
+          }
+      
+          function streamDestroyedHandler(event){
+            var stream=event.streams[0]
+            var size=countSessionStream()
+            if(size<connection_limit){
+              $('#waitlist_me').hide()
+              if(current_userId==nextInLine_id){
+                // initiate the next user inline
+                joinChat()
+                $('#join_chat').hide()
+              }else{
+                if(status=="chatting" || status=="waiting")
+                  $('#join_chat').hide()
+                else
+                  $('#join_chat').show()
+              }
+            }
+          }
+          function countSessionStream(){
+            var size=0
+            for(key in session.streams){
+              if(session.streams.hasOwnProperty(key)) size++
+            }
+            return size;
+          }
+          function joinChat(){
+             nextInLine_id=''
+             status="chatting"
+             var template='<div id="myPublisherDiv"></div>'
+             $('#myStream').append(template)
+             publisher = TB.initPublisher(api_key,'myPublisherDiv',{width:250, height:180})
+             session.publish(publisher)
+             var c_u= new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'
+                      +current_topic+'/waitlist/'+current_userId)
+             c_u.remove()
+             $('#waitlist_success').hide()
+          }
+        }) // <-- end of post '/getToken'-->
+      })// <-- end of topics.once -->
   
 
-  function updateWaitlist(data){
-    var before_me=1;
-    for(key in data.exportVal()){
-      if(key==current_userId){
-        $('#waitlist_success span').html(before_me)
-        return
+      function updateWaitlist(data){
+        var before_me=1;
+        for(key in data.exportVal()){
+          if(key==current_userId){
+            $('#waitlist_success span').html(before_me)
+            return
+          }
+          before_me++
+        }
       }
-      before_me++
-    }
-  }
-}) // <-- end of document.ready -->
-</script>
+    }) // <-- end of document.ready -->
+  
+  </script>
   <div id="main" class="container">
     
     <div class="topic_header"><%=@topic%></div>
@@ -214,5 +215,7 @@ $(function(){
     </div>
     
   </div>
+  
+
 </body>
 </html>
