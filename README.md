@@ -111,6 +111,14 @@ more details on how to implement the Handlers
 This project is made up of two pages. A homepage for displaying a list of topics and a show topic page to start a video chap arround 
 the topic. 
 
+To use the Firebase Javascript API, we must first include this in your html code: 
+
+<pre>
+  <script src="http://static.firebase.com/v0/firebase.js"></script>
+</pre> 
+
+
+
 ## HomePage 
 To create the topics database, I created a firebase object using a location url that specify the location of the new table.
 <pre>
