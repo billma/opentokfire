@@ -72,6 +72,10 @@ the client.
 </pre>
 
 ## Setting up OpenTok Client-side Code 
+With the token and session_id, you can easily connect to a session and subscribe to all the streams with in the session. 
+Below I have included only the Pseudo-code. You can find the full implementation in 'topics.erb' file. You can also 
+refer to the <a href="http://www.tokbox.com/opentok/api/documentation/gettingstarted">Tokbox Getting Started Guide</a> for 
+more details on how to implement the Handlers
 
 <pre>
   var session=TB.initSession(session_id)
@@ -80,51 +84,24 @@ the client.
   session.addEventListener('sessionConnected', sessionConnectedHandler);
   session.addEventListener('streamCreated', addNewStreamHandler)
   session.addEventListener("streamDestroyed", streamDestroyedHandler);
+  
   // connect the session
   session.connect(api_key, token)
   
   function sessionConnectedHandler(event){    
-  
-    // other code ...
-    
-    subscribeToStreams(event.streams)
+    // subscribe to all the streams ...
   }
   function addNewStreamHandler(event){
-    var stream=event.streams[0]
-    if(stream.connection.connectionId==session.connection.connectionId){
-      return;
-    } 
-    
-    // other code ...
-    
-    var div= document.createElement('div')
-    div.setAttribute('id', 'stream'+stream.streamId)
-    div.setAttribute('class', 'eachVideo')
-    $('#streams').append(div)
-    session.subscribe(stream,div.id,{width:250, height:180})
+    // display the new stream for all users
   }
   
-  // interate through all the streams in the session
-  // and display each stream
   function subscribeToStreams(streams){
-    for(var i=0; i<streams.length;i++){
-      if(streams[i].connection.connectionId==session.connection.connectionId){
-        return;
-      } 
-      var div= document.createElement('div')
-      div.setAttribute('id', 'stream'+streams[i].streamId)
-      div.setAttribute('class', 'eachVideo')
-      $('#streams').append(div)
-      session.subscribe(streams[i],div.id,{width:250, height:180})
-    }
+    // interate through all the streams in the session
+    // and display each stream
   }
   
-  // When a user disconnects from a session
   function streamDestroyedHandler(event){
-    var stream=event.streams[0]
-    
     // initiate chat for the next person on the waitlist 
-    
   }
-  jfdksal
+
 </pre>  
