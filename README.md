@@ -1,4 +1,4 @@
-Opentokfire
+OpenTokFire
 ============
 
 This app is made possible with OpenTok API for live video, and Firebase for scalable and real-time data storage. 
@@ -105,3 +105,28 @@ more details on how to implement the Handlers
   }
 
 </pre>  
+
+#FireBase API Walkthrough
+
+This project is made up of two pages. A homepage for displaying a list of topics and a show topic page to start a video chap arround 
+the topic. 
+
+## HomePage 
+To create the topics database, I created a firebase object using a location url that specify the location of the new table.
+<pre>
+var topics=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics')
+</pre> 
+
+Next setup <a href="http://www.firebase.com/docs/firebase/on.html"> on() </a> event listener to listen to changes in the database, and triggers the callback function containing the most recent list. 
+Then iterate through the list to display each topic
+
+<pre>
+  // get a list of topics 
+  listTopics=function(){
+    topics.on('value',function(data){
+      $('#listContainer').html('')
+      // iterate through the list
+      data.forEach(addTopicLink)
+    })
+  }
+</pre> 
