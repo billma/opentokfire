@@ -13,9 +13,87 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
   <script src="/bootstrap.js"></script>
   <script src="http://static.firebase.com/v0/firebase.js"></script>
-  <script src="/home.js"></script>
 </head>
 <body>
+  <script type="text/javascript">
+    $(function(){
+      // var clear = new Firebase('https://gamma.firebase.com/billma/opentokFire')
+      // clear.remove()
+
+      var topics=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics')
+  
+      // get a list of topics 
+      listTopics=function(){
+        topics.on('value',function(data){
+          $('#listContainer').html('')
+          // iterate through the list
+          data.forEach(addTopicLink)
+        })
+      }
+      addTopic=function(name,session_id){
+        // check to see if topic already exist
+        name=name.toLowerCase()
+        topics.once('value',function(data){
+          if(!data.hasChild(name)){
+            var newTopicRef=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+name)
+            // add a new room 
+            newTopicRef.set({name:name,session_id:session_id,totalUser:1}, function(){
+               window.location="/"+name;
+            })
+          }else{
+            // take the user to an existing topic
+            window.location="/"+name;
+          } 
+        })
+      }
+  
+      addTopicLink=function(topic){
+        topicName=topic.val()['name'].toLowerCase()
+        totalUser=topic.val()['totalUser']
+        if(totalUser=="0"){
+          // remove the topic if its empty
+          topic.ref().remove(listTopics)
+        }else{
+          // insert the room into listContainer div
+          var template='<a href="/'+topicName+'" topic="'+topicName+'"class="each_room btn">'+
+            '<i class="icon-group"></i>'+
+            '<span class="each_room_name">'+topicName+'</span>'+
+            '<span class="totalUser">'+totalUser+'</span>'+
+          '</a>'   
+          $('#listContainer').append(template)    
+        }
+      }
+  
+      function submitTopic(){
+        var name=$('#topic_input').val()
+        // post request, get the session_id
+        $.post( '/getSession',{},function(data){
+          if(data['session_id']!=null){
+              addTopic(name, data['session_id'])
+          }
+        })
+      }
+  
+      // list topics when homepage is loaded
+      listTopics()
+  
+      // submit topic when user click on 'enter' 
+      $('#topic_input').keypress(function(e){
+        if(e.keyCode==13){
+          submitTopic()
+          $('#topic_input').val('')
+        } 
+      })
+  
+      // user clicks on submit button
+      $('#submitTopic').click(function(){
+        submitTopic()
+      })
+
+    })
+
+  
+  </script>
   <div id="main" class="container">
     <div id="logo"></div>
     <div id="project_info">
