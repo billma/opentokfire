@@ -1,3 +1,4 @@
+
 OpenTokFire
 ============
 
@@ -113,10 +114,8 @@ the topic.
 
 To use the Firebase Javascript API, we must first include this in your html code: 
 
-<pre>
-  "<script src="http://static.firebase.com/v0/firebase.js"></script>"
-</pre> 
 
+    <script src="http://static.firebase.com/v0/firebase.js"></script>
 
 
 ## HomePage 
