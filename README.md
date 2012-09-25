@@ -137,13 +137,66 @@ Then iterate through the list to display each topic
   }
 </pre> 
 
-To create a new entry to the topics table, use the set() method to set the value of 'session_id' generated with Tokbox API earlier. 
+To create a new entry to the topics table, use the <a href="http://www.firebase.com/docs/firebase/set.html">set()</a> method to set the value of 'session_id' generated with Tokbox API earlier. 
 I also wanted each room to display its total numbers of users. So I added a 'totalUser' attributes and initialized it to 1. When everything 
 is done, use window.location to redirect the user to the room. 
 
- <pre>
-     var newTopicRef=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+name)
+<pre>
+    var newTopicRef=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+name)
     newTopicRef.set({name:name,session_id:session_id,totalUser:1}, function(){
         window.location="/"+name;
-     })
- </pre>
+    })
+</pre>
+
+
+##Topics Page
+
+To count the number of users in a room first create a 'users_count' table, and <a href="http://www.firebase.com/docs/firebase/push.html">push()</a> a new count into the 
+table when the page first load, then we setup <a href="http://www.firebase.com/docs/firebase/removeondisconnect.html">removeOnDisconnect()</a>
+listener to automatically remove the count when the user disconnects from the room. 
+<pre>
+    var users_count=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+current_topic+'/count')
+    newCount=users_count.push()
+    newCount.removeOnDisconnect()
+</pre>
+
+
+Whenever there is a change in the 'users_count' table, recount the table and update the 'totalUsers' attribute. 
+<pre>
+    users_count.on('value',function(data){
+      var count=0
+      data.forEach(function(){
+        count++;
+      })
+      current_topic_ref.child('totalUser').set(count)
+      $('#totalUser span').html(count)
+      current_topic_ref.child('totalUser').setOnDisconnect(count-1)
+    })
+</pre>
+
+If a room reaches its capacity, the user can get on a waitlist, the app will automatically initiate the user's video
+chat when someone else leaves 
+
+<pre>
+      waitlist_ref.on('value',function(data){
+      var count=0
+      var before_me=0;
+      // count the wailist
+      data.forEach(function(data){
+        count++;
+      })
+      // get Id of the person in the front 
+      // of the waitlist
+      nextInLine.once('value',function(data){
+        data.forEach(function(data){
+          nextInLine_id=data.ref().name()
+        })
+      })
+      // update the position of the person 
+      // who is currently waitlisted
+      updateWaitlist(data)
+    })
+</pre>
+
+
+
