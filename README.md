@@ -1,4 +1,3 @@
-
 OpenTokFire
 ============
 
@@ -137,3 +136,14 @@ Then iterate through the list to display each topic
     })
   }
 </pre> 
+
+To create a new entry to the topics table, use the set() method to set the value of 'session_id' generated with Tokbox API earlier. 
+I also wanted each room to display its total numbers of users. So I added a 'totalUser' attributes and initialized it to 1. When everything 
+is done, use window.location to redirect the user to the room. 
+
+ <pre>
+     var newTopicRef=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+name)
+    newTopicRef.set({name:name,session_id:session_id,totalUser:1}, function(){
+        window.location="/"+name;
+     })
+ </pre>
