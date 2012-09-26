@@ -16,12 +16,9 @@
 
 <script type="text/javascript">
   $(function(){
-    
     // set a limit of 4 videos per session
     var connection_limit=4
-    var session_id;
-    var api_key;
-    var token;
+    var session_id, api_key, token, status, current_user;
     var current_topic='<%=@topic%>'  
     // reference object for all the topics
     var topics=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics')
@@ -29,52 +26,36 @@
     var current_topic_ref=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+current_topic)
     // create a new waitlist table
     var waitlist_ref=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+current_topic+'/waitlist')
-    var current_user;
     var current_userId=-1;
-    // add a count to current_topic table
-    // count simply keeps track of the numbers of 
-    // users in the room
+    // add a count to current_topic table count simply keeps track of the numbers of users in the room
     var users_count=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+current_topic+'/count')
         totalCount=users_count.push()
         totalCount.set({id:''})
         totalCount.removeOnDisconnect()
-    // limit waitlist query to 1 to get the front of 
-    // the waitlist
+    // limit waitlist query to 1 to get the front of the waitlist
     var nextInLine=waitlist_ref.startAt().limit(1)
     var nextInLine_id=undefined;
-    // status of the user
-    var status;
-
-
     // listens to changes in # of users in the room
     users_count.on('value',function(data){
       var count=0
-      data.forEach(function(){
-        count++;
-      })
+      data.forEach(function(){count++;})
       current_topic_ref.child('totalUser').set(count)
       $('#totalUser span').html(count)
       current_topic_ref.child('totalUser').setOnDisconnect(count-1)
     })
-
-
     // listens to changes in waitlist
     waitlist_ref.on('value',function(data){
       var count=0
       var before_me=0;
       // count the wailist
-      data.forEach(function(data){
-        count++;
-      })
-      // get Id of the person in the front 
-      // of the waitlist
+      data.forEach(function(data){count++;})
+      // get Id of the person in the front of the waitlist
       nextInLine.once('value',function(data){
         data.forEach(function(data){
           nextInLine_id=data.ref().name()
         })
       })
-      // update the position of the person 
-      // who is currently waitlisted
+      // update the position of the person who is currently waitlisted
       updateWaitlist(data)
     })
 
@@ -83,38 +64,29 @@
       // current topic object
       topic=data.child(current_topic).val()
       session_id=topic['session_id']
-      // Post request, to generate a tokbox token using the 
-      // session_id
+      // Post request, to generate a tokbox token using the session_id
       $.post('/getToken',{},function(data){
         api_key=data['api_key']
         token=data['token']
         // creating a new Tokbox Session
         var session=TB.initSession(session_id)
-  
         // setup tokbox session event
         session.addEventListener('sessionConnected', sessionConnectedHandler);
         session.addEventListener('streamCreated', addNewStreamHandler)
         session.addEventListener("streamDestroyed", streamDestroyedHandler);
-        // connects to the session, this will 
-        // fire up the 'sessionConnected' event
+        // connects to the session, this will fire up the 'sessionConnected' event
         session.connect(api_key, token)
-    
     
         // put the user onto the waitlist
         $('#waitlist_me').live('click',function(){
-          // add a new person onto the 
-          // waitlist table
+          // add a new person onto the waitlist table
           current_user=waitlist_ref.push()
-          // init the object with an arbitary name,  
-          // firebase API requires that the new object 
-          // to be non-empty, it will generate a 
-          // unique id for current_user
+          // init the object with an arbitary name,firebase API requires that the new object 
+          // to be non-empty, it will generate a unique id for current_user
           current_user.set({name:""})
-          // set auto-removal when the user disconnect
-          // from the page 
+          // set auto-removal when the user disconnect from the page 
           current_user.removeOnDisconnect()
-          // .name() returns the unique id for 
-          // the current_user
+          // .name() returns the unique id for the current_user
           current_userId=current_user.name()
           $('#waitlist_success').show()
           $('#waitlist_me').hide()
@@ -123,15 +95,10 @@
           })
           status="waiting"
         })
-
         $('#join_chat').live('click',function(){
           joinChat()
           $('#join_chat').hide()
         })
-    
-    
-        // tokbox session event handlers
-        
         // when the current user is connected to the topic session
         function sessionConnectedHandler(event){    
           if(event.connections.length<=connection_limit)
@@ -143,9 +110,7 @@
         // when a new stream is added 
         function addNewStreamHandler(event){
           var stream=event.streams[0]
-          if(stream.connection.connectionId==session.connection.connectionId){
-            return;
-          } 
+          if(stream.connection.connectionId==session.connection.connectionId) return;
           var size=countSessionStream()
           if(size<connection_limit){
             $('#waitlist_me').hide()
@@ -160,23 +125,17 @@
           $('#streams').append(div)
           session.subscribe(stream,div.id,{width:250, height:180})
         }
-    
-        // interate through all the streams in the session
-        // and display each stream
+        // interate through all the streams in the session and display each stream
         function subscribeToStreams(streams){
           for(var i=0; i<streams.length;i++){
-            if(streams[i].connection.connectionId==session.connection.connectionId){
-              return;
-            } 
+            if(streams[i].connection.connectionId==session.connection.connectionId) return;
             var div= document.createElement('div')
             div.setAttribute('id', 'stream'+streams[i].streamId)
             div.setAttribute('class', 'eachVideo')
             $('#streams').append(div)
             session.subscribe(streams[i],div.id,{width:250, height:180})
           }
-        }
-        
-        
+        } 
         // When a user disconnects from a session
         function streamDestroyedHandler(event){
           var stream=event.streams[0]
@@ -195,8 +154,7 @@
             }
           }
         }
-        // count how many streams are in 
-        // this session
+        // count how many streams are in this session
         function countSessionStream(){
           var size=0
           for(key in session.streams){
@@ -221,9 +179,7 @@
       }) // <-- end of post '/getToken'-->
     })// <-- end of topics.once -->
 
-    // if a person is waitlisted 
-    // update the user's position in the 
-    // waitlist
+    // if a person is waitlisted update the user's position in the waitlist
     function updateWaitlist(data){
       var before_me=1;
       for(key in data.exportVal()){
@@ -235,15 +191,13 @@
       }
     }
   }) // <-- end of document.ready -->
-
 </script>
   <div id="main" class="container">
     
     <div class="topic_header"><%=@topic%></div>
     <a href="./" class="back_button">
       <i class="icon-circle-arrow-left"></i>
-    </a>
-    
+    </a> 
     <div id="streams">
      <div id="myStream"></div>
     </div>
