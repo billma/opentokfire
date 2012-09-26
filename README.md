@@ -52,8 +52,7 @@ the session_id
 
 ## generating a token
 The token is used to connect to a session when the user enters a topic room. We can make a post request to '/getToken' and attach 
-the session_id in the params.  OpenTok SDK object then generates a token for the session_id and return a JSON response to 
-the client. 
+the session_id in the params.  OpenTok SDK object then generates a token for the session_id by calling generate_token(). 
 
 <pre>
   post '/getToken' do
@@ -108,10 +107,9 @@ more details on how to implement the handlers
 
 #FireBase API Walkthrough
 
-This project is made up of two pages. A homepage for displaying a list of topics and a show topic page to start a video chap arround 
-the topic. 
+This project is made up of two pages. A homepage for displaying a list of topics and a show topic page to start a video chat 
 
-To use the Firebase Javascript API, we must first include this in your html code: 
+To use the Firebase Javascript API, we must first include the following in your html: 
 
 
     <script src="http://static.firebase.com/v0/firebase.js"></script>
@@ -120,11 +118,11 @@ To use the Firebase Javascript API, we must first include this in your html code
 ## HomePage 
 To create the topics database, I created a firebase object using a location url that specify the location of the new table.
 <pre>
-var topics=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics')
+var topics=new Firebase('https://gamma.firebase.com/user_name/project_name/topics')
 </pre> 
 
-Next, we need to setup <a href="http://www.firebase.com/docs/firebase/on.html"> the on() </a> event listener to listen to changes in database. 
-When a change in topics table occurs, it will trigger the callback function which adds each topic onto the page.  
+Next, we need to setup <a href="http://www.firebase.com/docs/firebase/on.html"> the on() </a> event listener. 
+When something changers in the topics database, it will trigger the callback function to add the most updated list onto the page.
 
 <pre>
   // get a list of topics 
