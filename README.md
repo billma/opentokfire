@@ -7,6 +7,14 @@ users to login to Google. There is a maximum of four videos per room. When the r
 be added onto a wait-list and still subscribe to the on-going conversation.
 
 
+The OpenTokFire Challenge 
+===========================
+If you like this project and would like to contribute your ideas, OpenTokFire project is open for pull requests. 
+We will choose a best idea to be incorporated into the project. The winner of the chanllege will get a written 
+acknowledgement from the Firebase's founder and a blog page dedicated to your effort at www.twotibs.com. 
+
+
+
 ## How To Run: 
 Open up your terminal and gem install the sinatra framework. Then run the app server. 
 <pre>
@@ -52,8 +60,7 @@ the session_id
 
 ## generating a token
 The token is used to connect to a session when the user enters a topic room. We can make a post request to '/getToken' and attach 
-the session_id in the params.  OpenTok SDK object then generates a token for the session_id and return a JSON response to 
-the client. 
+the session_id in the params.  OpenTok SDK object then generates a token for the session_id by calling generate_token(). 
 
 <pre>
   post '/getToken' do
@@ -72,10 +79,10 @@ the client.
 </pre>
 
 ## Setting up OpenTok Client-side Code 
-With the token and session_id, you can easily connect to a session and subscribe to all the streams with in the session. 
+With the token and session_id, you can easily connect to a session and subscribe to all the streams within the session. 
 Below I have included only the Pseudo-code. You can find the full implementation in 'topics.erb' file. You can also 
 refer to the <a href="http://www.tokbox.com/opentok/api/documentation/gettingstarted">Tokbox Getting Started Guide</a> for 
-more details on how to implement the Handlers
+more details on how to implement the handlers
 
 <pre>
   var session=TB.initSession(session_id)
@@ -108,10 +115,9 @@ more details on how to implement the Handlers
 
 #FireBase API Walkthrough
 
-This project is made up of two pages. A homepage for displaying a list of topics and a show topic page to start a video chap arround 
-the topic. 
+This project is made up of two pages. A homepage for displaying a list of topics and a show topic page to start a video chat 
 
-To use the Firebase Javascript API, we must first include this in your html code: 
+To use the Firebase Javascript API, we must first include the following in your html: 
 
 
     <script src="http://static.firebase.com/v0/firebase.js"></script>
@@ -120,11 +126,11 @@ To use the Firebase Javascript API, we must first include this in your html code
 ## HomePage 
 To create the topics database, I created a firebase object using a location url that specify the location of the new table.
 <pre>
-var topics=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics')
+var topics=new Firebase('https://gamma.firebase.com/user_name/project_name/topics')
 </pre> 
 
-Next setup <a href="http://www.firebase.com/docs/firebase/on.html"> on() </a> event listener to listen to changes in the database, and triggers the callback function containing the most recent list. 
-Then iterate through the list to display each topic
+Next, we need to setup <a href="http://www.firebase.com/docs/firebase/on.html"> the on() </a> event listener. 
+When something changers in the topics database, it will trigger the callback function to add the most updated list onto the page.
 
 <pre>
   // get a list of topics 
@@ -136,3 +142,67 @@ Then iterate through the list to display each topic
     })
   }
 </pre> 
+
+To create a new entry to the topics table, use the <a href="http://www.firebase.com/docs/firebase/set.html">set()</a> method to set the value of 'session_id' generated with Tokbox API earlier. 
+I also wanted each room to display its total numbers of users. So I added a 'totalUser' attributes and initialized it to 1. When everything 
+is done, use window.location to redirect the user to the room. 
+
+<pre>
+    var newTopicRef=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+name)
+    newTopicRef.set({name:name,session_id:session_id,totalUser:1}, function(){
+        window.location="/"+name;
+    })
+</pre>
+
+
+##Topics Page
+
+To count the number of users in a room, first create a 'users_count' table, and <a href="http://www.firebase.com/docs/firebase/push.html">push()</a> a new count into the 
+table when the page is loaded. Then we setup <a href="http://www.firebase.com/docs/firebase/removeondisconnect.html">removeOnDisconnect()</a>
+listener to automatically remove the count when the user disconnects from the room. 
+<pre>
+    var users_count=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+current_topic+'/count')
+    newCount=users_count.push()
+    newCount.removeOnDisconnect()
+</pre>
+
+
+When a change occurs in the 'users_count' table, recount the table and update the 'totalUsers' attribute. 
+<pre>
+    users_count.on('value',function(data){
+      var count=0
+      data.forEach(function(){
+        count++;
+      })
+      current_topic_ref.child('totalUser').set(count)
+      $('#totalUser span').html(count)
+      current_topic_ref.child('totalUser').setOnDisconnect(count-1)
+    })
+</pre>
+
+If a room reaches its capacity, the user can get on a waitlist, the app will automatically initiate the user's video
+chat when someone else leaves 
+
+<pre>
+      waitlist_ref.on('value',function(data){
+      var count=0
+      var before_me=0;
+      // count the wailist
+      data.forEach(function(data){
+        count++;
+      })
+      // get Id of the person in the front 
+      // of the waitlist
+      nextInLine.once('value',function(data){
+        data.forEach(function(data){
+          nextInLine_id=data.ref().name()
+        })
+      })
+      // update the position of the person 
+      // who is currently waitlisted
+      updateWaitlist(data)
+    })
+</pre>
+
+
+
