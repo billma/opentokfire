@@ -157,8 +157,8 @@ is done, use window.location to redirect the user to the room.
 
 ##Topics Page
 
-To count the number of users in a room first create a 'users_count' table, and <a href="http://www.firebase.com/docs/firebase/push.html">push()</a> a new count into the 
-table when the page first load, then we setup <a href="http://www.firebase.com/docs/firebase/removeondisconnect.html">removeOnDisconnect()</a>
+To count the number of users in a room, first create a 'users_count' table, and <a href="http://www.firebase.com/docs/firebase/push.html">push()</a> a new count into the 
+table when the page is loaded. Then we setup <a href="http://www.firebase.com/docs/firebase/removeondisconnect.html">removeOnDisconnect()</a>
 listener to automatically remove the count when the user disconnects from the room. 
 <pre>
     var users_count=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+current_topic+'/count')
@@ -167,7 +167,7 @@ listener to automatically remove the count when the user disconnects from the ro
 </pre>
 
 
-Whenever there is a change in the 'users_count' table, recount the table and update the 'totalUsers' attribute. 
+When a change occurs in the 'users_count' table, recount the table and update the 'totalUsers' attribute. 
 <pre>
     users_count.on('value',function(data){
       var count=0
