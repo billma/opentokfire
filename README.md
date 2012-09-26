@@ -7,6 +7,14 @@ users to login to Google. There is a maximum of four videos per room. When the r
 be added onto a wait-list and still subscribe to the on-going conversation.
 
 
+The OpenTokFire Challenge 
+===========================
+If you like this project and would like to contribute your ideas, OpenTokFire project is open for pull requests. 
+We will choose a best idea to be incorporated into the project. The winner of the chanllege will get a written 
+acknowledgement from Firebase's founder and a blog page about the person to be featured on our blog at www.twotibs.com
+
+
+
 ## How To Run: 
 Open up your terminal and gem install the sinatra framework. Then run the app server. 
 <pre>
