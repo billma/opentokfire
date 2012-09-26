@@ -11,7 +11,7 @@ The OpenTokFire Challenge
 ===========================
 If you like this project and would like to contribute your ideas, OpenTokFire project is open for pull requests. 
 We will choose a best idea to be incorporated into the project. The winner of the chanllege will get a written 
-acknowledgement from Firebase's founder and a blog page about the person to be featured on our blog at www.twotibs.com
+acknowledgement from the Firebase's founder and a blog page dedicated to your effort at www.twotibs.com. 
 
 
 
