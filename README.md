@@ -72,10 +72,10 @@ the client.
 </pre>
 
 ## Setting up OpenTok Client-side Code 
-With the token and session_id, you can easily connect to a session and subscribe to all the streams with in the session. 
+With the token and session_id, you can easily connect to a session and subscribe to all the streams within the session. 
 Below I have included only the Pseudo-code. You can find the full implementation in 'topics.erb' file. You can also 
 refer to the <a href="http://www.tokbox.com/opentok/api/documentation/gettingstarted">Tokbox Getting Started Guide</a> for 
-more details on how to implement the Handlers
+more details on how to implement the handlers
 
 <pre>
   var session=TB.initSession(session_id)
@@ -123,8 +123,8 @@ To create the topics database, I created a firebase object using a location url 
 var topics=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics')
 </pre> 
 
-Next setup <a href="http://www.firebase.com/docs/firebase/on.html"> on() </a> event listener to listen to changes in the database, and triggers the callback function containing the most recent list. 
-Then iterate through the list to display each topic
+Next, we need to setup <a href="http://www.firebase.com/docs/firebase/on.html"> the on() </a> event listener to listen to changes in database. 
+When a change in topics table occurs, it will trigger the callback function which adds each topic onto the page.  
 
 <pre>
   // get a list of topics 
