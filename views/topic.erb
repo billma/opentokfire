@@ -16,6 +16,7 @@
 
 <script type="text/javascript">
   $(function(){
+    $('#namePrompt input').focus()
     // set a limit of 4 videos per session
     var connection_limit=4
     var session_id, api_key, token, status, current_user,userName;
@@ -68,7 +69,13 @@
       $('#displayChat ul').html('')
       data.forEach(function(data){
         var msg=data.val()
-        var template='<li><h4>'+msg['name']+':</h4>'+msg['msg']+'</li>'
+        console.log(msg['msg']=="new user")
+        var template
+        if(msg['msg']=="new user"){
+          template='<li><center>'+msg['name']+' has join the room</center></li>'
+        }else{
+          template='<li><p><h4>'+msg['name']+':</h4>'+msg['msg']+'</p></li>' 
+        }
         $('#displayChat ul').append(template)
       })
       $('#displayChat').animate({
@@ -127,19 +134,25 @@
           checkName()
           if(e.keyCode==13 && $('#namePrompt input').val()){
             userName=$('#namePrompt input').val()
+            var newMsg=chatBox.push()
+            newMsg.set({name:userName,msg:"new user"})
             closePrompt()
           }
         })
         $('.submitName').live('click',function(){
           userName=$('#namePrompt input').val()
+          var newMsg=chatBox.push()
+          newMsg.set({name:userName,msg:"new user"})
           closePrompt()
         })
         $('#chatInput input').keyup(function(e){
           if(e.keyCode==13){
             var value=$('#chatInput input').val()
-            var newMsg=chatBox.push()
-                newMsg.set({name:userName, msg:value})
-             $('#chatInput input').val('')
+            if(value.trim()!=''){
+              var newMsg=chatBox.push()
+              newMsg.set({name:userName, msg:value})
+            }
+            $('#chatInput input').val('')
           }
         })
         $('#chatInput input').focus(function(){

@@ -54,7 +54,8 @@
   #main{
     width:900px;
     height:100%;
-    margin:0px auto;
+/*    margin:0px auto;*/
+    margin:50px auto 0 auto;
   }
   #main_left{
     width:550px;
@@ -84,9 +85,12 @@
   #displayChat li{
     margin:10px 5px 5px 5px;
     font-size:15px;
+    word-wrap:break-word;
   }
    #displayChat li h4{
-     font-size:17px;
+     display:inline;
+     font-size:19px;
+     
    }
   #chatInput{
     width:300px;
@@ -127,6 +131,7 @@
     border-bottom-right-radius:10px;
     box-shadow:0 10px 100px -2px #000;
   }
+  
   #logo{
     position:relative;
     background:url('/img/logo-firetok.png');
@@ -134,6 +139,17 @@
     height:80px;
     margin:0 auto;
     text-align:center;
+    
+  }
+  #intro{
+    font-size:20px;
+    color:#7D7D7D;
+    width:900px;
+    margin:10px auto 0 auto;
+/*    border:1px solid black;*/
+    height:20px;
+    text-align:center;
+    background:url('/img/bar.png');
     
   }
   h1{
@@ -229,22 +245,27 @@
     color:#C3C3C3;
   }
   #submitTopic{
+    position:relative;
+    top:-2px;
     width:320px;
-    padding-top:12px;
-    padding-bottom:16px;
+    padding-top:14px;
+    padding-bottom:17px;
     float:left;
     font-size:25px;
     text-align:center;
     border-top-right-radius:30px;
     border-bottom-right-radius:30px;
-    background:-webkit-linear-gradient(top, #242424, #232324);
+/*    background:-webkit-linear-gradient(top, #242424, #232324);*/
+    background:#EEE;
     border:1px solid #202020; 
-    color:white;
-    box-shadow: 1px 1px 20px black inset;
+    color:#282828;
+     border-left:none;
+/*    box-shadow: 3px 5px 10px black;*/
   }
   #submitTopic:hover{
      cursor:pointer;
      background:-webkit-linear-gradient(top, #313131, #2B2B2D);
+     color:white;
   }
   
   #submitTopic i{
@@ -254,7 +275,7 @@
     left:-1px;
   }
   #topList{
-    margin-top:311px;
+    margin-top:400px;
     position:fixed;
     top:0;
     bottom:0;

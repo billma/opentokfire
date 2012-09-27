@@ -19,6 +19,7 @@
     $(function(){
       // var clear = new Firebase('https://gamma.firebase.com/billma/opentokFire')
       // clear.remove()
+      $('#topic_input').focus()
 
       var topics=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics')
   
@@ -96,6 +97,9 @@
   </script>
   <div id="main" class="container">
     <div id="logo"></div>
+    <div id="intro">
+      <p>Create a room or select an existing room below to start</p>
+    </div>
     <div id="project_info">
       <div class="links">
         <a id="firebase_link" href="http://www.firebase.com/">
