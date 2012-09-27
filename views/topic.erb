@@ -18,8 +18,9 @@
   $(function(){
     // set a limit of 4 videos per session
     var connection_limit=4
-    var session_id, api_key, token, status, current_user;
+    var session_id, api_key, token, status, current_user,userName;
     var current_topic='<%=@topic%>'  
+    var chatBox=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+current_topic+'/chatBox')
     // reference object for all the topics
     var topics=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics')
     // reference object for current topic
@@ -29,12 +30,17 @@
     var current_userId=-1;
     // add a count to current_topic table count simply keeps track of the numbers of users in the room
     var users_count=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+current_topic+'/count')
-        totalCount=users_count.push()
-        totalCount.set({id:''})
-        totalCount.removeOnDisconnect()
+        newCount=users_count.push()
+        newCount.set({id:''})
+        newCount.removeOnDisconnect()
     // limit waitlist query to 1 to get the front of the waitlist
     var nextInLine=waitlist_ref.startAt().limit(1)
     var nextInLine_id=undefined;
+    
+    /* --------------------------*
+     * Filebase Event Listeners
+     *---------------------------*/
+     
     // listens to changes in # of users in the room
     users_count.on('value',function(data){
       var count=0
@@ -58,6 +64,17 @@
       // update the position of the person who is currently waitlisted
       updateWaitlist(data)
     })
+    chatBox.on('value',function(data){
+      $('#displayChat ul').html('')
+      data.forEach(function(data){
+        var msg=data.val()
+        var template='<li><h4>'+msg['name']+':</h4>'+msg['msg']+'</li>'
+        $('#displayChat ul').append(template)
+      })
+      $('#displayChat').animate({
+        scrollTop:$('#displayChat ul').height()
+      })
+    })
 
     // get topic data api_key and session_id etc
     topics.once('value',function(data){
@@ -76,7 +93,12 @@
         session.addEventListener("streamDestroyed", streamDestroyedHandler);
         // connects to the session, this will fire up the 'sessionConnected' event
         session.connect(api_key, token)
-    
+        
+        
+        
+        /* --------------------------*
+         * Jquery Events
+         *---------------------------*/
         // put the user onto the waitlist
         $('#waitlist_me').live('click',function(){
           // add a new person onto the waitlist table
@@ -95,10 +117,42 @@
           })
           status="waiting"
         })
+        
         $('#join_chat').live('click',function(){
           joinChat()
           $('#join_chat').hide()
         })
+        
+        $('#namePrompt input').keyup(function(e){
+          checkName()
+          if(e.keyCode==13 && $('#namePrompt input').val()){
+            userName=$('#namePrompt input').val()
+            closePrompt()
+          }
+        })
+        $('.submitName').live('click',function(){
+          userName=$('#namePrompt input').val()
+          closePrompt()
+        })
+        $('#chatInput input').keyup(function(e){
+          if(e.keyCode==13){
+            var value=$('#chatInput input').val()
+            var newMsg=chatBox.push()
+                newMsg.set({name:userName, msg:value})
+             $('#chatInput input').val('')
+          }
+        })
+        $('#chatInput input').focus(function(){
+          console.log()
+          $('.icon-comments-alt').css('color','#82080A')
+        })
+        $('#chatInput input').focusout(function(){
+          $('.icon-comments-alt').css('color','#8D8F8F')
+        })
+        
+        /* --------------------------*
+         * Tokbox event Handlers
+         *---------------------------*/
         // when the current user is connected to the topic session
         function sessionConnectedHandler(event){    
           if(event.connections.length<=connection_limit)
@@ -162,7 +216,6 @@
           }
           return size;
         }
-        
         // start publishing current user's video
         function joinChat(){
            nextInLine_id=''
@@ -176,10 +229,21 @@
            c_u.remove()
            $('#waitlist_success').hide()
         }
+        function checkName(){
+          var value=$('#namePrompt input').val().trim()
+          if(!value)
+             $('.submitName').attr('disabled','disabled')
+          else
+            $('.submitName').removeAttr('disabled')
+        }
+        function closePrompt(){
+          $('.background_dimmer').hide()
+          $('.floatingContent').hide()
+        }
+        // if a person is waitlisted update the user's position in the waitlist
+        
       }) // <-- end of post '/getToken'-->
     })// <-- end of topics.once -->
-
-    // if a person is waitlisted update the user's position in the waitlist
     function updateWaitlist(data){
       var before_me=1;
       for(key in data.exportVal()){
@@ -193,23 +257,39 @@
   }) // <-- end of document.ready -->
 </script>
   <div id="main" class="container">
-    
-    <div class="topic_header"><%=@topic%></div>
-    <a href="./" class="back_button">
-      <i class="icon-circle-arrow-left"></i>
-    </a> 
-    <div id="streams">
-     <div id="myStream"></div>
+    <div id="main_left">
+        <div class="topic_header"><%=@topic%></div>
+        <a href="./" class="back_button">
+          <i class="icon-circle-arrow-left"></i>
+        </a> 
+        <div id="streams">
+         <div id="myStream"></div>
+        </div>
+        <div id="waitlist_success">You have been waitlisted! Position <span>1</span> </div>
+        <div id="topic_control_container">
+          <i id="totalUser" class="icon-group"><span>1</span></i>
+          <div id="waitlist_me" class="topic_control">Waitlist Me</div>
+          <div id="join_chat" class="topic_control">Join Chat</div>
+        </div>
     </div>
-    <div id="waitlist_success">You have been waitlisted! Position <span>1</span> </div>
-    <div id="topic_control_container">
-      <i id="totalUser" class="icon-group"><span>1</span></i>
-      <div id="waitlist_me" class="topic_control">Waitlist Me</div>
-      <div id="join_chat" class="topic_control">Join Chat</div>
+    <div id="main_right">
+      <div id="chatroom">
+        <div id="displayChat"><ul></ul></div>
+        <div id="chatInput">
+          <input type="" />
+          <i class="icon-comments-alt"></i>
+        </div>
+      </div>
     </div>
-    
   </div>
-  
+  <div class="background_dimmer"></div>
+  <div class="floatingContent">
+    <div id="namePrompt">
+      <h3>What's your name? </h3>
+       <input type="" />
+      <button class="submitName btn" disabled="disabled">Lets Chat!</button>
+    </div>
+  </div>
 
 </body>
 </html>
