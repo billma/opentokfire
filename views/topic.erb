@@ -74,7 +74,7 @@
         if(msg['msg']=="new user"){
           template='<li><center>'+msg['name']+' has join the room</center></li>'
         }else{
-          template='<li><p><h4>'+msg['name']+':</h4>'+msg['msg']+'</p></li>' 
+          template='<li><p><h4>'+msg['name']+': </h4>'+msg['msg']+'</p></li>' 
         }
         $('#displayChat ul').append(template)
       })
