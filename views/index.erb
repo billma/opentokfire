@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE HTML>
 <html lang="en-US">
 <head>
@@ -31,23 +29,24 @@
           data.forEach(addTopicLink)
         })
       }
+      
+      // User types in new topic
       addTopic=function(name,session_id){
         // check to see if topic already exist
         name=name.toLowerCase()
-        topics.once('value',function(data){
-          if(!data.hasChild(name)){
-            var newTopicRef=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+name)
-            // add a new room 
-            newTopicRef.set({name:name,session_id:session_id,totalUser:1}, function(){
-               window.location="/"+name;
-            })
-          }else{
-            // take the user to an existing topic
+        for(var i=0; i<$('.each_room_name').length; i++){
+          if(name== $( $('.each_room_name')[i] ).text().toLowerCase() ){
             window.location="/"+name;
-          } 
-        })
+            return;
+          }
+        }
+        var newTopicRef=new Firebase('https://gamma.firebase.com/billma/opentokFire/topics/'+name)
+        newTopicRef.set({name:name,session_id:session_id,totalUser:1}, function(){
+          window.location="/"+name;
+        });
       }
-  
+      
+      // Adding the UI for each room/topic
       addTopicLink=function(topic){
         topicName=topic.val()['name'].toLowerCase()
         totalUser=topic.val()['totalUser']
@@ -65,6 +64,7 @@
         }
       }
   
+      // Create room, grab sessionId first
       function submitTopic(){
         var name=$('#topic_input').val()
         // post request, get the session_id
@@ -90,7 +90,6 @@
       $('#submitTopic').click(function(){
         submitTopic()
       })
-
     })
 
   

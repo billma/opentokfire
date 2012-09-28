@@ -181,22 +181,22 @@
   #tokbox_link{
     width:48%;
     position:relative;
-/*    background:#1E1E1F;*/
-    background:#38373A;
+    background:#1E1E1F;
+   
      box-shadow: 1px 1px 100px black inset;
   }#tokbox_link:hover{
-    
+     background:#38373A;
    
   }
   #firebase_link{
     width:52%;
-/*    background:#E3E3E3;*/
-    background:white;
+    background:#E3E3E3;
+   
     position:relative;
     box-shadow: 1px 1px 100px #888888 inset;
   }
   #firebase_link:hover{
-    
+     background:white;
   }
   #newTopic_form{
 
